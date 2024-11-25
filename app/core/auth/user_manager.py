@@ -62,6 +62,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         self, password: str, user: Union[UserCreate, User]
     ) -> None:
         if len(password) < 8:
-            raise InvalidPasswordException(reason="Password should be at least 8 characters"),
+            raise InvalidPasswordException(
+                reason="Password should be at least 8 characters"
+            )
         if user.email in password:
             raise InvalidPasswordException(reason="Password should not contain e-mail")
