@@ -5,29 +5,37 @@ from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-LOG_DEFAULT_FORMAT = "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+LOG_DEFAULT_FORMAT = (
+    "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+)
+
 
 class LoggingConfig(BaseModel):
     log_level: Literal[
-        'debug',
-        'info',
-        'warning',
-        'error',
-        'critical',
-    ] = 'info'
+        "debug",
+        "info",
+        "warning",
+        "error",
+        "critical",
+    ] = "info"
     log_format: str = LOG_DEFAULT_FORMAT
+
 
 class RunConfig(BaseModel):
     host: str = "0.0.0.0"
     port: int = 8000
 
+
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     users: str = "/users"
+    auth: str = "/auth"
+
 
 class ApiPrefix(BaseModel):
     prefix: str = "/api"
     v1: ApiV1Prefix = ApiV1Prefix()
+
 
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
@@ -36,7 +44,7 @@ class DatabaseConfig(BaseModel):
     pool_size: int = 50
     max_overflow: int = 10
 
-    convention: dict[str,str] = {
+    convention: dict[str, str] = {
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_name)s",
         "ck": "ck_%(table_name)s_%(constraint_name)s",
@@ -44,10 +52,12 @@ class DatabaseConfig(BaseModel):
         "pk": "pk_%(table_name)s",
     }
 
+
 class AccessToken(BaseModel):
     lifetime_seconds: int = 3600
     reset_password_token_secret: str
     verification_token_secret: str
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
